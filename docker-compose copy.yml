@@ -1,0 +1,21 @@
+version: '3'
+services:
+  webui-forge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./output:/content/out
+      - ./models:/content/stable-diffusion-webui-forge/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    restart: unless-stopped
+    shm_size: 8gb
+    command: python launch.py --share --port 7860 --api --precision half --xformers
